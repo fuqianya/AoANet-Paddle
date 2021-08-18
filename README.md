@@ -123,17 +123,18 @@ python prepro.py
 ├── prepro.py          　# 数据预处理
 ├── train.py           　# 训练主函数
 ├── eval.py            　# 测试主函数
-├── train_xe.sh          # 训练脚本
-├── train_rl.sh          # 训练脚本
-│── eval_xe.sh           # 测试脚本
-└── eval_rl.sh           # 测试脚本
+├── train_xe.sh       　 # 训练脚本
+├── train_rl.sh       　 # 训练脚本
+├── eval_xe.sh        　 # 测试脚本
+├── eval_rl.sh        　 # 测试脚本
+└── requirement.txt   　 # 依赖包
 ```
 
 模型、训练的所有参数信息都在`config.py`中进行了详细注释，详情见`config/config.py`。
 
 ## 七、模型信息
 
-"关于模型的其他信息，可以参考下表：
+关于模型的其他信息，可以参考下表：
 
 | 信息 | 说明 |
 | :---: | :---: |
