@@ -3,7 +3,7 @@
 	url = https://github.com/ruotianluo/cider.git
         branch = dbb3960165d86202ed3c417b412a000fc8e717f3
 [submodule "coco-caption"]
-        path = coco-caption
-        url = https://github.com/ruotianluo/coco-caption.git
+	path = coco-caption
+	url = https://github.com/ruotianluo/coco-caption.git
         branch = dda03fc714f1fcc8e2696a8db0d469d99b881411
 
