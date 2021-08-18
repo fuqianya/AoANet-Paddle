@@ -52,12 +52,10 @@ cd AoANet-Paddle
 pip install -r requirements.txt
 ```
 
-### step3: 下载数据
+### step3: 下载数据集及特征
 
 ```bash
-# 下载数据集及特征
 bash ./download_dataset.sh
-# 下载
 ```
 
 ### step4: 数据集预处理
@@ -66,4 +64,82 @@ bash ./download_dataset.sh
 python prepro.py
 ```
 
-### step5: 
+### step5: 训练
+
+训练过程过程分为两步(详情见论文3.3节):
+
+* Training with Cross Entropy (XE) Loss
+
+  ```bash
+  bash ./train_xe.sh
+  ```
+
+* CIDEr-D Score Optimization
+
+  ```bash
+  bash ./train_rl.sh
+  ```
+### step6: 测试
+
+* 测试`train_xe`阶段的模型
+
+  ```bash
+  bash ./eval_xe.sh
+  ```
+* 测试`train_rl`阶段的模型
+  ```bash
+  bash ./eval_rl.sh
+  ```
+
+你将分别得到和以下分数相似的结果:
+```python
+{'Bleu_1': 0.7729384559899702, 'Bleu_2': 0.6163398035383025, 'Bleu_3': 0.4790123137715982, 'Bleu_4': 0.36944349063530374, 'METEOR': 0.2848188431924821, 'ROUGE_L': 0.5729849683867054, 'CIDEr': 1.1842173801790759, 'SPICE': 0.21650786258302354}
+```
+
+```python
+{'Bleu_1': 0.8054903453672397, 'Bleu_2': 0.6523038976984842, 'Bleu_3': 0.5096621263772566, 'Bleu_4': 0.39140307771618477, 'METEOR': 0.29011216375635934, 'ROUGE_L': 0.5890369750273199, 'CIDEr': 1.2892294296245852, 'SPICE': 0.22680092759866174}
+```
+
+### 使用预训练模型进行预测
+
+模型下载: [谷歌云盘](https://drive.google.com/)
+
+将下载的模型权重以及训练信息放到`checkpoints`目录下, 运行`step6`的指令进行测试。
+
+## 六、代码结构与详细说明
+
+```bash
+├── config
+│　 └── config.py        # 模型的参数设置
+├── checkpoints     　   # 存储训练的模型
+├── data            　   # 预处理的数据
+├── model
+│   └── AoAModel.py    　# 定义模型结构
+│   └── dataloader.py  　# 加载训练数据
+│   └── loss.py        　# 定义损失函数
+├── utils 
+│   └── eval_utils.py  　# 测试工具
+│   └── utils.py    　   # 其他工具
+├── prepro.py          　# 数据预处理
+├── train.py           　# 训练主函数
+├── eval.py            　# 测试主函数
+├── train_xe.sh          # 训练脚本
+├── train_rl.sh          # 训练脚本
+│── eval_xe.sh           # 测试脚本
+└── eval_rl.sh           # 测试脚本
+```
+
+模型、训练的所有参数信息都在`config.py`中进行了详细注释，详情见`config/config.py`。
+
+## 七、模型信息
+
+"关于模型的其他信息，可以参考下表：
+
+| 信息 | 说明 |
+| :---: | :---: |
+| 发布者 | fuqianya |
+| 时间 | 2021.08 |
+| 框架版本 | Paddle 2.1.0 |
+| 应用场景 | 多模态 |
+| 支持硬件 | GPU、CPU |
+| 下载链接 | [预训练模型]() \| [训练日志]()  |
