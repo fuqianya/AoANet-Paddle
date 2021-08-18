@@ -1,6 +1,6 @@
 [submodule "cider"]
-        path = cider
-        url = https://github.com/ruotianluo/cider.git
+	path = cider
+	url = https://github.com/ruotianluo/cider.git
         branch = dbb3960165d86202ed3c417b412a000fc8e717f3
 [submodule "coco-caption"]
         path = coco-caption
