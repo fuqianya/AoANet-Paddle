@@ -20,19 +20,23 @@
 
 | 指标 | BlEU-1 | BlEU-2 | BlEU-3 | BlEU-4 | METEOR | ROUGE-L | CIDEr-D | SPICE |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 原论文 | 0.805 | 0.652 | 0.510 | 0.391 | 0.290 | 0.589 | 1.289 | 0.227|
-| 复现精度 | - | - | - | - | - | - | - | - |
+| 原论文 | 0.805 | 0.652 | 0.510 | 0.391 | 0.290 | 0.589 | 1.289 | 0.227 |
+| 复现精度 | 0.802 | 0.648 | 0.504 | 0.385 | 0.286 | 0.585 | 1.271 | 0.222 |
 
+**注:你将得到和原论文更接近的结果，如果和原论文一样训练(25 + 15)个epoch。**
+**以上结果只训练了(20 + 10)个epoch，且训练阶段忘记对数据进行打乱操作。**
+***machine is learning ...*** **我们会很快更新上面的结果**
 
 ## 三、数据集
 
-本项目所使用的数据集为[COCO2014](https://cocodataset.org/)。该数据集共包含123287张图像，每张图像对应5个标题。训练集、验证集和测试集分别为113287、5000、5000张图像及其对应的标题。本项目使用预提取的`bottom-up`特征，可以从[这里](https://github.com/peteanderson80/bottom-up-attention)下载得到（我们提供了脚本下载该数据集的标题以及图像特征，见[download_dataset.sh](https://github.com/fuqianya/bottom-up-attention-paddle/download_dataset.sh)）。
+本项目所使用的数据集为[COCO2014](https://cocodataset.org/)。该数据集共包含123287张图像，每张图像对应5个标题。训练集、验证集和测试集分别为113287、5000、5000张图像及其对应的标题。本项目使用预提取的`bottom-up`特征，可以从[这里](https://github.com/peteanderson80/bottom-up-attention)下载得到（我们提供了脚本下载该数据集的标题以及图像特征，见[download_dataset.sh](https://github.com/fuqianya/AoANet-Paddle/blob/main/download_dataset.sh)）。
 
 ## 四、环境依赖
 
 * 硬件：CPU、GPU ( > 11G )
 
 * 软件：
+    * Python 3.8
     * Java 1.8.0
     * PaddlePaddle == 2.1.0
 
@@ -42,7 +46,7 @@
 
 ```bash
 # clone this repo
-git clone https://github.com/fuqianya/AoANet-Paddle.git
+git clone https://github.com/fuqianya/AoANet-Paddle.git --recursive
 cd AoANet-Paddle
 ```
 
@@ -52,10 +56,14 @@ cd AoANet-Paddle
 pip install -r requirements.txt
 ```
 
-### step3: 下载数据集及特征
+### step3: 下载数据
 
 ```bash
+# 下载数据集及特征
 bash ./download_dataset.sh
+# 下载与计算评价指标相关的文件
+bash ./coco-caption/get_google_word2vec_model.sh
+bash ./coco-caption/get_stanford_models.sh
 ```
 
 ### step4: 数据集预处理
@@ -84,11 +92,11 @@ python prepro.py
 * 测试`train_xe`阶段的模型
 
   ```bash
-  bash ./eval_xe.sh
+  python eval.py --model log/log_aoa/model-best.pth --infos_path log/log_aoa/infos_aoa-best.pkl --num_images -1 --language_eval 1 --beam_size 2 --batch_size 100 --split test
   ```
 * 测试`train_rl`阶段的模型
   ```bash
-  bash ./eval_rl.sh
+  python eval.py --model log/log_aoa_rl/model-best.pth --infos_path log/log_aoa_rl/infos_aoa-best.pkl --num_images -1 --language_eval 1 --beam_size 2 --batch_size 100 --split test
   ```
 
 你将分别得到和以下分数相似的结果:
@@ -102,17 +110,19 @@ python prepro.py
 
 ### 使用预训练模型进行预测
 
-模型下载: [谷歌云盘](https://drive.google.com/)
+模型下载: [谷歌云盘](https://drive.google.com/drive/folders/1SjMtmtu9z5tdmZUplUGOBnIA5jyv_PSu?usp=sharing)
 
-将下载的模型权重以及训练信息放到`checkpoints`目录下, 运行`step6`的指令进行测试。
+将下载的模型权重以及训练信息放到`log`目录下, 运行`step6`的指令进行测试。
 
 ## 六、代码结构与详细说明
 
 ```bash
+├── cider              　# 计算评价指标工具
+├── coco-caption       　# 计算评价指标工具
 ├── config
 │　 └── config.py        # 模型的参数设置
-├── checkpoints     　   # 存储训练的模型
 ├── data            　   # 预处理的数据
+├── log             　   # 存储训练模型及历史信息
 ├── model
 │   └── AoAModel.py    　# 定义模型结构
 │   └── dataloader.py  　# 加载训练数据
@@ -120,13 +130,12 @@ python prepro.py
 ├── utils 
 │   └── eval_utils.py  　# 测试工具
 │   └── utils.py    　   # 其他工具
+├── download_dataset.sh　# 数据集下载脚本
 ├── prepro.py          　# 数据预处理
 ├── train.py           　# 训练主函数
 ├── eval.py            　# 测试主函数
 ├── train_xe.sh       　 # 训练脚本
 ├── train_rl.sh       　 # 训练脚本
-├── eval_xe.sh        　 # 测试脚本
-├── eval_rl.sh        　 # 测试脚本
 └── requirement.txt   　 # 依赖包
 ```
 
@@ -143,4 +152,4 @@ python prepro.py
 | 框架版本 | Paddle 2.1.0 |
 | 应用场景 | 多模态 |
 | 支持硬件 | GPU、CPU |
-| 下载链接 | [预训练模型]() \| [训练日志]()  |
+| 下载链接 | [预训练模型](https://drive.google.com/drive/folders/1SjMtmtu9z5tdmZUplUGOBnIA5jyv_PSu?usp=sharing) \| [训练日志]()  |
