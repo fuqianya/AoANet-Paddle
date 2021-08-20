@@ -154,4 +154,4 @@ python prepro.py
 | 框架版本 | Paddle 2.1.0 |
 | 应用场景 | 多模态 |
 | 支持硬件 | GPU、CPU |
-| 下载链接 | [预训练模型](https://drive.google.com/drive/folders/1SjMtmtu9z5tdmZUplUGOBnIA5jyv_PSu?usp=sharing) \| [训练日志]()  |
+| 下载链接 | [预训练模型](https://drive.google.com/drive/folders/1SjMtmtu9z5tdmZUplUGOBnIA5jyv_PSu?usp=sharing) \| [训练日志](https://drive.google.com/file/d/1_sfdhtL7hGQSbBL4kRw4_bBP8y6QdzZu/view?usp=sharing)  |
