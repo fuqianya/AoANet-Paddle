@@ -42,6 +42,33 @@ class RewardCriterion(nn.Layer):
 
         return output
 
+class LabelSmoothing(nn.Layer):
+    "Implement label smoothing."
+    def __init__(self, vocab_size, smoothing=0.0):
+        super(LabelSmoothing, self).__init__()
+        self.criterion = nn.KLDivLoss(reduction='none')
+        self.vocab_size = vocab_size + 1
+        self.confidence = 1.0 - smoothing
+        self.smoothing = smoothing
+
+    def forward(self, input, target, mask):
+        # truncate to the same size
+        target = target[:, :input.shape[1]]
+        mask = mask[:, :input.shape[1]]
+
+        input = input.reshape((-1, input.shape[-1]))
+        target = target.reshape((-1, ))
+        mask = mask.reshape((-1, ))
+
+        self.size = input.shape[1]
+        target_one_hot = F.one_hot(target, num_classes=self.vocab_size)
+        x = fluid.layers.fill_constant(target_one_hot.shape, target_one_hot.dtype, value=self.confidence)
+        y = fluid.layers.fill_constant(target_one_hot.shape, target_one_hot.dtype, value=self.smoothing / (self.size - 1))
+        true_dist = paddle.where(target_one_hot!=0, x, y)
+
+        return (self.criterion(input, true_dist).sum(1) * mask).sum() / mask.sum()
+
+
 class XECriterion(nn.Layer):
     def __init__(self):
         super(XECriterion, self).__init__()
@@ -66,15 +93,21 @@ class LossWrapper(nn.Layer):
         super(LossWrapper, self).__init__()
         self.opt = opt
         self.model = model
-        self.crit = XECriterion()
+        if opt.label_smoothing > 0:
+            self.crit = LabelSmoothing(vocab_size=opt.vocab_size, smoothing=opt.label_smoothing)
+        else:
+            self.crit = XECriterion()
         self.rl_crit = RewardCriterion()
 
     def forward(self, fc_feats, att_feats, labels, masks, att_masks, gts, gt_indices, sc_flag):
         out = {}
         if not sc_flag:
             self.model.train()
-            pred = self.model(fc_feats, att_feats, labels, att_masks)
-            loss = self.crit(pred, labels[:, 1:], masks[:, 1:])
+            logit_pred, prob_pred = self.model(fc_feats, att_feats, labels, att_masks)
+            if self.opt.label_smoothing > 0:
+                loss = self.crit(prob_pred, labels[:, 1:], masks[:, 1:])
+            else:
+                loss = self.crit(logit_pred, labels[:, 1:], masks[:, 1:])
 
         else:
             self.model.eval()

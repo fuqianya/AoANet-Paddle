@@ -28,7 +28,7 @@ import paddle.nn.functional as F
 import paddle.fluid as fluid
 
 # utils
-from utils.utils import clones, attention, penalty_builder
+from utils.utils import clones, attention
 
 bad_endings = ['a','an','the','in','for','at','of','with','before','after','on','upon','near','to','is','are','am']
 
@@ -407,9 +407,10 @@ class AoAModel(nn.Layer):
             prob_outputs.append(logprobs)
 
         # we concat the output when finish all time steps
-        logit_outputs = paddle.stack(logit_outputs, axis=1)  # [batch_size, max_len, vocab_size]
+        logit_outputs = paddle.stack(logit_outputs, axis=1)
+        prob_outputs = paddle.stack(prob_outputs, axis=1)  # [batch_size, max_len, vocab_size]
 
-        return logit_outputs
+        return logit_outputs, prob_outputs
 
     def forward_sample(self, fc_feats, att_feats, att_masks=None, opt={}):
         sample_method = opt.get('sample_method', 'greedy')
@@ -549,3 +550,35 @@ class AoAModel(nn.Layer):
             sampleLogprobs = paddle.gather_nd(logprobs, gather_index)
 
         return it, sampleLogprobs
+
+if __name__ == '__main__':
+    confidence = 0.7
+    import numpy as np
+
+    paddle.nn.functional.one_hot
+
+
+"""
+paddle.scatter_nd_add(x, index, updates, name=None)
+- 案例 1:
+    x = [0, 1, 2, 3, 4, 5]
+    index = [[1], [2], [3], [1]]
+    updates = [9, 10, 11, 12]
+
+  得到:
+
+    output = [0, 22, 12, 14, 4, 5]
+    
+- 案例 2:
+    x = [[65, 17], [-14, -25]]
+    index = [[], []]
+    updates = [[[-1, -2], [1, 2]],
+               [[3, 4], [-3, -4]]]
+    x.shape = (2, 2)
+    index.shape = (2, 0)
+    updates.shape = (2, 2, 2)
+
+  得到:
+
+    output = [[67, 19], [-16, -27]]
+"""

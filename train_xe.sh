@@ -9,7 +9,7 @@ python train.py --id $id \
     --multi_head_scale 1 \
     --ctx_drop 1 \
     --dropout_aoa 0.3 \
-    --label_smoothing 0.0 \
+    --label_smoothing 0.2 \
     --input_json data/cocotalk.json \
     --input_label_h5 data/cocotalk.h5 \
     --feat_dir data/feats \

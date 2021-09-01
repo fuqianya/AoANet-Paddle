@@ -71,14 +71,15 @@ def language_eval(dataset, preds, model_id, split):
 
 def eval_split(model, crit, loader, eval_kwargs={}):
     verbose = eval_kwargs.get('verbose', False)
-    verbose_beam = eval_kwargs.get('verbose_beam', 1)
-    verbose_loss = eval_kwargs.get('verbose_loss', 1)
+    verbose_beam = eval_kwargs.get('verbose_beam', 0)
+    verbose_loss = eval_kwargs.get('verbose_loss', 0)
     num_images = eval_kwargs.get('num_images', eval_kwargs.get('val_images_use', -1))
     split = eval_kwargs.get('split', 'val')
     lang_eval = eval_kwargs.get('language_eval', 1)
     dataset = eval_kwargs.get('dataset', 'coco')
     beam_size = eval_kwargs.get('beam_size', 1)
     remove_bad_endings = eval_kwargs.get('remove_bad_endings', 0)
+    label_smoothing = eval_kwargs.get('remove_bad_endings', 0.0)
     # Use this nasty way to make other code clean since it's a global configuration
     os.environ["REMOVE_BAD_ENDINGS"] = str(remove_bad_endings)
 
@@ -95,7 +96,11 @@ def eval_split(model, crit, loader, eval_kwargs={}):
         if labels is not None and verbose_loss:
             # forward the model to get loss
             with paddle.no_grad():
-                loss = crit(model(fc_feats, att_feats, labels, att_masks), labels[:, 1:], masks[:, 1:]).item()
+                logit_pred, prob_pred = model(fc_feats, att_feats, labels, att_masks)
+                if label_smoothing > 0:
+                    loss = crit(prob_pred, labels[:, 1:], masks[:, 1:]).item()
+                else:
+                    loss = crit(logit_pred, labels[:, 1:], masks[:, 1:]).item()
             loss_sum = loss_sum + loss
             loss_evals = loss_evals + 1
 

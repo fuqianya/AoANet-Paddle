@@ -78,16 +78,6 @@ def attention(query, key, value, mask=None, dropout=None):
 
     return paddle.matmul(p_attn, value), p_attn
 
-def penalty_builder(penalty_config):
-    if penalty_config == '':
-        return lambda x,y: y
-    pen_type, alpha = penalty_config.split('_')
-    alpha = float(alpha)
-    if pen_type == 'wu':
-        return lambda x,y: length_wu(x,y,alpha)
-    if pen_type == 'avg':
-        return lambda x,y: length_average(x,y,alpha)
-
 def init_scorer(cached_tokens):
     global CiderD_scorer
     CiderD_scorer = CiderD_scorer or CiderD(df=cached_tokens)

@@ -41,10 +41,6 @@ from model.loss import LossWrapper
 from utils import utils, eval_utils
 
 def main(opt):
-    # set random seed
-    paddle.seed(opt.seed)
-    random.seed(opt.seed)
-
     # set up loader
     train_loader, val_loader, _ = get_dataloaders(opt)
     opt.vocab_size = train_loader.dataset.vocab_size
