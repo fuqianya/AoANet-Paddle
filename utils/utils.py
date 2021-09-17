@@ -114,13 +114,13 @@ def get_self_critical_reward(greedy_res, data_gts, gen_result, opt):
     gts = {i: gts[i % batch_size // seq_per_img] for i in range(2 * batch_size)}
     if opt.cider_reward_weight > 0:
         _, cider_scores = CiderD_scorer.compute_score(gts, res_)
-        print('Cider scores:', _)
+        #print('Cider scores:', _)
     else:
         cider_scores = 0
     if opt.bleu_reward_weight > 0:
         _, bleu_scores = Bleu_scorer.compute_score(gts, res__)
         bleu_scores = np.array(bleu_scores[3])
-        print('Bleu scores:', _[3])
+        #print('Bleu scores:', _[3])
     else:
         bleu_scores = 0
     scores = opt.cider_reward_weight * cider_scores + opt.bleu_reward_weight * bleu_scores
