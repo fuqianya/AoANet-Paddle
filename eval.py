@@ -67,7 +67,7 @@ def main(opt):
     # since we do not care about loss when evaluate the model
     crit = None
 
-    _, _, lang_stats = eval_split_parallel(model, crit, test_loader, vars(opt))
+    _, _, lang_stats = eval_split(model, crit, test_loader, vars(opt))
 
     if lang_stats:
         # output results
