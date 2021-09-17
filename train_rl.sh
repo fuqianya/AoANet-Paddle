@@ -20,7 +20,7 @@ python train.py --id $id \
     --rnn_size 1024 \
     --language_eval 1 \
     --val_images_use -1 \
-    --save_checkpoint_every 3000 \
+    --save_checkpoint_every 6000 \
     --start_from log/log_$id \
     --checkpoint_path log/log_$id"_rl" \
     --learning_rate 2e-5 \
