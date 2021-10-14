@@ -21,9 +21,7 @@ Loss functions used to compute loss.
 
 import paddle
 import paddle.nn as nn
-import paddle.fluid as fluid
 import paddle.nn.functional as F
-from paddle.fluid.layers import unsqueeze
 
 from utils.utils import init_scorer, get_self_critical_reward
 
@@ -35,7 +33,7 @@ class RewardCriterion(nn.Layer):
         input = input.reshape((-1, ))
         reward = reward.reshape((-1, ))
         mask = paddle.to_tensor((seq > 0), dtype='float32')
-        mask = paddle.concat(x=[fluid.layers.fill_constant(shape=[mask.shape[0], 1], value=1, dtype='float32'),
+        mask = paddle.concat(x=[paddle.full(shape=[mask.shape[0], 1], value=1, dtype='float32'),
                                 mask[:, :-1]], axis=1).reshape((-1, ))
         output = - input * reward * mask
         output = paddle.sum(output) / paddle.sum(mask)
@@ -62,8 +60,8 @@ class LabelSmoothing(nn.Layer):
 
         self.size = input.shape[1]
         target_one_hot = F.one_hot(target, num_classes=self.vocab_size)
-        x = fluid.layers.fill_constant(target_one_hot.shape, target_one_hot.dtype, value=self.confidence)
-        y = fluid.layers.fill_constant(target_one_hot.shape, target_one_hot.dtype, value=self.smoothing / (self.size - 1))
+        x = paddle.full(target_one_hot.shape, target_one_hot.dtype, value=self.confidence)
+        y = paddle.full(target_one_hot.shape, target_one_hot.dtype, value=self.smoothing / (self.size - 1))
         true_dist = paddle.where(target_one_hot!=0, x, y)
 
         return (self.criterion(input, true_dist).sum(1) * mask).sum() / mask.sum()

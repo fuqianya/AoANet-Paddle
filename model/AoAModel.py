@@ -25,7 +25,6 @@ from collections import namedtuple
 import paddle
 import paddle.nn as nn
 import paddle.nn.functional as F
-import paddle.fluid as fluid
 
 # utils
 from utils.utils import clones, attention
@@ -62,8 +61,10 @@ class LayerNorm(nn.Layer):
     """Construct a layernorm module. See equation (7) in the paper for details."""
     def __init__(self, features, eps=1e-6):
         super(LayerNorm, self).__init__()
-        self.a_2 = paddle.create_parameter(shape=(features, ), dtype='float32', default_initializer=fluid.initializer.ConstantInitializer(value=1.))
-        self.b_2 = paddle.create_parameter(shape=(features, ), dtype='float32', default_initializer=fluid.initializer.ConstantInitializer(value=0.))
+        self.a_2 = paddle.create_parameter(shape=(features, ), dtype='float32',
+                                           default_initializer=nn.initializer.Constant(value=1.))
+        self.b_2 = paddle.create_parameter(shape=(features, ), dtype='float32',
+                                           default_initializer=nn.initializer.Constant(value=0.))
         self.eps = eps
 
     def forward(self, x):
@@ -236,8 +237,8 @@ class AoA_Decoder_Core(nn.Layer):
         output = self.att2ctx(ctx_input)
 
         # save the context vector to state[0][1]
-        state = (paddle.concat([fluid.layers.unsqueeze(h_att, 0), fluid.layers.unsqueeze(output, 0)]),
-                 paddle.concat([fluid.layers.unsqueeze(c_att, 0), fluid.layers.unsqueeze(state[1][1], 0)]))
+        state = (paddle.concat([paddle.unsqueeze(h_att, 0), paddle.unsqueeze(output, 0)]),
+                 paddle.concat([paddle.unsqueeze(c_att, 0), paddle.unsqueeze(state[1][1], 0)]))
         output = self.out_drop(output)
         return output, state
 
@@ -307,9 +308,9 @@ class AoAModel(nn.Layer):
         """
         # embed att feats
         att_feats = self.att_embed(att_feats)
-        scores_mask = fluid.layers.fill_constant(shape=att_masks.shape, dtype=att_masks.dtype, value=1e-9)
+        scores_mask = paddle.full(shape=att_masks.shape, dtype=att_masks.dtype, value=1e-9)
         scores = paddle.where(paddle.broadcast_to(att_masks, shape=scores_mask.shape) != 0, att_masks, scores_mask)
-        att_feats *= fluid.layers.unsqueeze(scores, axes=[-1])
+        att_feats *= paddle.unsqueeze(scores, axes=[-1])
         att_feats = self.refiner(att_feats, att_masks)
 
         # meaning pooling
@@ -317,8 +318,8 @@ class AoAModel(nn.Layer):
         if att_masks is None:
             mean_feats = paddle.mean(att_feats, axis=1)
         else:
-            mean_feats = (paddle.sum(att_feats * fluid.layers.unsqueeze(att_masks, axes=[-1]), axis=1) /
-                          paddle.sum(fluid.layers.unsqueeze(att_masks, axes=[-1]), axis=1))
+            mean_feats = (paddle.sum(att_feats * paddle.unsqueeze(att_masks, axes=[-1]), axis=1) /
+                          paddle.sum(paddle.unsqueeze(att_masks, axes=[-1]), axis=1))
 
         # Project the attention feats first to reduce memory and computation.
         p_att_feats = self.ctx2att(att_feats)
@@ -376,7 +377,7 @@ class AoAModel(nn.Layer):
         for i in range(seq.shape[1] - 1):
             if self.training and i >= 1 and self.ss_prob > 0.0:
                 # using scheduled sampling
-                sample_prob = fluid.layers.uniform_random(shape=(batch_size, ), min=0, max=1)
+                sample_prob = paddle.uniform(shape=(batch_size, ), min=0, max=1)
                 sample_mask = sample_prob < self.ss_prob
                 if sample_mask.sum() == 0:
                     it = seq[:, i].clone()  # [batch_size, ]
