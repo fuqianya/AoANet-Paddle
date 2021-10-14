@@ -88,11 +88,11 @@ python prepro.py
 * 测试`train_xe`阶段的模型
 
   ```bash
-  python eval.py --model log/log_aoa/model-best.pth --infos_path log/log_aoa/infos_aoa-best.pkl --num_images -1 --language_eval 1 --beam_size 2 --batch_size 100 --split test
+  python eval.py --model log/log_aoa/model.pth --infos_path log/log_aoa/infos_aoa.pkl --num_images -1 --language_eval 1 --beam_size 2 --batch_size 100 --split test
   ```
 * 测试`train_rl`阶段的模型
   ```bash
-  python eval.py --model log/log_aoa_rl/model-best.pth --infos_path log/log_aoa_rl/infos_aoa-best.pkl --num_images -1 --language_eval 1 --beam_size 2 --batch_size 100 --split test
+  python eval.py --model log/log_aoa_rl/model.pth --infos_path log/log_aoa_rl/infos_aoa.pkl --num_images -1 --language_eval 1 --beam_size 2 --batch_size 100 --split test
   ```
 
 你将分别得到和以下分数相似的结果:
