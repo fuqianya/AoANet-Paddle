@@ -92,21 +92,12 @@ python prepro.py
 * 测试`train_xe`阶段的模型
 
   ```bash
-  python eval.py --model log/log_aoa/model.pth --infos_path log/log_aoa/infos_aoa.pkl --num_images -1 --language_eval 1 --beam_size 2 --batch_size 100 --split test
+  python eval.py --model log/log_aoa/model.pdparams --infos_path log/log_aoa/infos_aoa.pkl --num_images -1 --language_eval 1 --beam_size 2 --batch_size 100 --split test
   ```
 * 测试`train_rl`阶段的模型
   ```bash
-  python eval.py --model log/log_aoa_rl/model.pth --infos_path log/log_aoa_rl/infos_aoa.pkl --num_images -1 --language_eval 1 --beam_size 2 --batch_size 100 --split test
+  python eval.py --model log/log_aoa_rl/model.pdparams --infos_path log/log_aoa_rl/infos_aoa.pkl --num_images -1 --language_eval 1 --beam_size 2 --batch_size 100 --split test
   ```
-
-你将分别得到和以下分数相似的结果:
-```python
-{'Bleu_1': 0.7729384559899702, 'Bleu_2': 0.6163398035383025, 'Bleu_3': 0.4790123137715982, 'Bleu_4': 0.36944349063530374, 'METEOR': 0.2848188431924821, 'ROUGE_L': 0.5729849683867054, 'CIDEr': 1.1842173801790759, 'SPICE': 0.21650786258302354}
-```
-
-```python
-{'Bleu_1': 0.8054903453672397, 'Bleu_2': 0.6523038976984842, 'Bleu_3': 0.5096621263772566, 'Bleu_4': 0.39140307771618477, 'METEOR': 0.29011216375635934, 'ROUGE_L': 0.5890369750273199, 'CIDEr': 1.2892294296245852, 'SPICE': 0.22680092759866174}
-```
 
 ### 使用预训练模型进行预测
 
@@ -152,4 +143,4 @@ python prepro.py
 | 框架版本 | Paddle 2.1.0 |
 | 应用场景 | 多模态 |
 | 支持硬件 | GPU、CPU |
-| 下载链接 | [预训练模型](https://drive.google.com/drive/folders/1SjMtmtu9z5tdmZUplUGOBnIA5jyv_PSu?usp=sharing) \| [训练日志](https://drive.google.com/file/d/1_sfdhtL7hGQSbBL4kRw4_bBP8y6QdzZu/view?usp=sharing)  |
+| 下载链接 | [预训练模型](https://drive.google.com/drive/folders/1SB9GAvHt39GIiLuomlqtVFLAxbgG9QPQ?usp=sharing) \| [训练日志](https://drive.google.com/drive/folders/1SB9GAvHt39GIiLuomlqtVFLAxbgG9QPQ?usp=sharing)  |

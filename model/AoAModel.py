@@ -308,7 +308,7 @@ class AoAModel(nn.Layer):
         """
         # embed att feats
         att_feats = self.att_embed(att_feats)
-        scores_mask = paddle.full(shape=att_masks.shape, dtype=att_masks.dtype, value=1e-9)
+        scores_mask = paddle.full(shape=att_masks.shape, dtype=att_masks.dtype, fill_value=1e-9)
         scores = paddle.where(paddle.broadcast_to(att_masks, shape=scores_mask.shape) != 0, att_masks, scores_mask)
         att_feats *= paddle.unsqueeze(scores, axes=[-1])
         att_feats = self.refiner(att_feats, att_masks)

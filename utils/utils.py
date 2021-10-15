@@ -137,10 +137,10 @@ def save_checkpoint(model, infos, optimizer, opt, histories=None, append=''):
     # if checkpoint_path doesn't exist
     if not os.path.isdir(opt.checkpoint_path):
         os.makedirs(opt.checkpoint_path)
-    checkpoint_path = os.path.join(opt.checkpoint_path, 'model%s.pth' %(append))
+    checkpoint_path = os.path.join(opt.checkpoint_path, 'model%s.pdparams' %(append))
     paddle.save(model.state_dict(), checkpoint_path)
     print("model saved to {}".format(checkpoint_path))
-    optimizer_path = os.path.join(opt.checkpoint_path, 'optimizer%s.pth' %(append))
+    optimizer_path = os.path.join(opt.checkpoint_path, 'optimizer%s.pdparams' %(append))
     paddle.save(optimizer.state_dict(), optimizer_path)
     with open(os.path.join(opt.checkpoint_path, 'infos_'+opt.id+'%s.pkl' %(append)), 'wb') as f:
         pickle.dump(infos, f)

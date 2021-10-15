@@ -80,8 +80,8 @@ def main(opt):
 
     # restore model and continue to train
     if opt.start_from is not None:
-        model.set_state_dict(paddle.load(os.path.join(opt.start_from, 'model.pth')))
-        print('Load state dict from %s.' % os.path.join(opt.start_from, 'model.pth'))
+        model.set_state_dict(paddle.load(os.path.join(opt.start_from, 'model.pdparams')))
+        print('Load state dict from %s.' % os.path.join(opt.start_from, 'model.pdparams'))
 
     # set up criterion
     criterion = LossWrapper(model, opt)

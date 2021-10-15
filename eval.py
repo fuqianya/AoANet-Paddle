@@ -75,7 +75,7 @@ def main(opt):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', type=str, default='./log/log_aoa_rl/model-best.pth',
+    parser.add_argument('--model', type=str, default='./log/log_aoa_rl/model-best.pdparams',
                         help='path to model to evaluate.')
     parser.add_argument('--infos_path', type=str, default='./log/log_aoa_rl/infos_aoa-best.pkl',
                         help='path to infos to evaluate.')
