@@ -60,8 +60,8 @@ class LabelSmoothing(nn.Layer):
 
         self.size = input.shape[1]
         target_one_hot = F.one_hot(target, num_classes=self.vocab_size)
-        x = paddle.full(target_one_hot.shape, target_one_hot.dtype, fill_value=self.confidence)
-        y = paddle.full(target_one_hot.shape, target_one_hot.dtype, fill_value=self.smoothing / (self.size - 1))
+        x = paddle.full(target_one_hot.shape, dtype=target_one_hot.dtype, fill_value=self.confidence)
+        y = paddle.full(target_one_hot.shape, dtype=target_one_hot.dtype, fill_value=self.smoothing / (self.size - 1))
         true_dist = paddle.where(target_one_hot!=0, x, y)
 
         return (self.criterion(input, true_dist).sum(1) * mask).sum() / mask.sum()
