@@ -493,7 +493,7 @@ class AoAModel(nn.Layer):
         state = self._init_hidden(1)  # batch_size is 1
 
         candidates = [BeamCandidate(state, 0., [], 0, [])]  # 0 is for start and end
-        for t in range(self.seq_length + 1):
+        for t in range(self.seq_length):
             tmp_candidates = []
             end_flag = True
             for candidate in candidates:
