@@ -6,7 +6,7 @@
 
 本项目基于[paddle](https://github.com/PaddlePaddle/Paddle)复现[Attention on Attention for Image Captioning](https://arxiv.org/abs/1908.06954)中所提出的`Attention on Attention`模型。该模型在传统的`self-attention`注意力机制的基础上，添加了`gate`机制以过滤和`query`不相关的`attention`信息。同时，作者还引入`multi-head attention`用于建模不同目标之间的关系。
 
-**注: AI Studio项目地址: [https://aistudio.baidu.com/aistudio/projectdetail/2470054](https://aistudio.baidu.com/aistudio/projectdetail/2470054).**
+**注: AI Studio项目地址: [https://aistudio.baidu.com/aistudio/projectdetail/3290242](https://aistudio.baidu.com/aistudio/projectdetail/3290242).**
 
 **您可以使用[AI Studio](https://aistudio.baidu.com/)平台在线运行该项目!**
 
