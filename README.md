@@ -107,6 +107,8 @@ python prepro.py
 
 ## 六、Demo
 
+我们提供一个Demo样例，详情见[demo.ipynb](https://github.com/fuqianya/AoANet-Paddle/blob/main/demo.ipynb)
+
 ## 七、代码结构与详细说明
 
 ```bash
